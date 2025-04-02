@@ -35,6 +35,24 @@ def graficar(i,df):
     plt.close()
   return lista
 
+def actualizar():
+  nombres = []
+  for i,url in  enumerate(URLs):    
+    df  = descargar(url)
+    nombres.extend(graficar(i,df))
+  return nombres
+
+@app.route('/')
+def index():
+  return render_template('index.html', nombres = nombres)
+
+@app.route('/actualizar')
+def actualizar_datos():
+  global nombres
+  nombres = actualizar()
+  return redirect('/')
+
+
 # Programa Principal
 if __name__ == '__main__':   
   # Ejecuta la app
