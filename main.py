@@ -1,17 +1,23 @@
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, url_for
 import pandas as pd
 import matplotlib.pyplot as plt
+
+# import matplotlib
+# matplotlib.use()
+
+
 
 # Buscar en ThingSpeak estaciones meteorológicas:
 # https://thingspeak.mathworks.com/channels/public
 # Ejemplos:
-# https://thingspeak.mathworks.com/channels/870845
 # https://thingspeak.mathworks.com/channels/1293177
 # https://thingspeak.mathworks.com/channels/12397
 
 URLs = [
+  'https://thingspeak.mathworks.com/channels/1293177/feed.csv',
+  'https://thingspeak.mathworks.com/channels/12397/feed.csv'
+  
 ]
-
 app = Flask(__name__)
 
 def descargar(url):
@@ -41,19 +47,20 @@ def actualizar():
     df  = descargar(url)
     nombres.extend(graficar(i,df))
   return nombres
-
+    
+    
 @app.route('/')
 def index():
   return render_template('index.html', nombres = nombres)
+
+# Programa Principal
 
 @app.route('/actualizar')
 def actualizar_datos():
   global nombres
   nombres = actualizar()
   return redirect('/')
-
-
-# Programa Principal
 if __name__ == '__main__':   
-  # Ejecuta la app
+  # Ejecuta la app 
+  nombres = actualizar()
   app.run(host='0.0.0.0', debug=True)
